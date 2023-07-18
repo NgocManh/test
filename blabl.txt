@@ -3,5 +3,7 @@ HMAC-SHA-256 Key registered
 Save these values right now. They won't be shown ever again!
 
 API Key: vhu7yYHsTm7qmhD63BYD0yJ0xlMundUKYcyITMauDDFJ5qAdvESBwa5aHuRs9i7J
-
+https://github.com/cromewar/Binance-trading-bot/blob/master/strategy.py
 Secret Key: PNee3wJpac7aL0m2X8ei4X9j5LOzsQPEI7QcohsKi7iNmOPVCBPmfR52EXPQKl8G
+https://binance-docs.github.io/apidocs/futures/en/#filters
+https://python-binance.readthedocs.io/en/latest/
