@@ -1,1 +1,7 @@
 bla bla t tao duoc git r ne. ahihi
+HMAC-SHA-256 Key registered
+Save these values right now. They won't be shown ever again!
+
+API Key: vhu7yYHsTm7qmhD63BYD0yJ0xlMundUKYcyITMauDDFJ5qAdvESBwa5aHuRs9i7J
+
+Secret Key: PNee3wJpac7aL0m2X8ei4X9j5LOzsQPEI7QcohsKi7iNmOPVCBPmfR52EXPQKl8G
