@@ -7,3 +7,7 @@ https://github.com/cromewar/Binance-trading-bot/blob/master/strategy.py
 Secret Key: PNee3wJpac7aL0m2X8ei4X9j5LOzsQPEI7QcohsKi7iNmOPVCBPmfR52EXPQKl8G
 https://binance-docs.github.io/apidocs/futures/en/#filters
 https://python-binance.readthedocs.io/en/latest/
+https://dev.binance.vision/c/api-en/futures-api-en/14
+    https://dev.binance.vision/t/creating-a-limit-order-with-a-higher-price-than-the-mark-price/16483
+        https://dev.binance.vision/t/how-can-i-attach-tp-sl-to-binance-futuressell-buy/14979/3
+            https://dev.binance.vision/t/max-quantity-calculation/10415/13
