@@ -13,3 +13,4 @@ https://dev.binance.vision/c/api-en/futures-api-en/14
             https://dev.binance.vision/t/max-quantity-calculation/10415/13
 https://pypi.org/project/talipp/
 https://www.binance.com/en/support/faq/what-is-a-trailing-stop-order-360042299292
+https://www.binance.com/en/support/faq/how-to-use-binance-futures-calculator-360036498511
