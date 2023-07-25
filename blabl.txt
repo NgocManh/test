@@ -15,3 +15,4 @@ https://pypi.org/project/talipp/
 https://www.binance.com/en/support/faq/what-is-a-trailing-stop-order-360042299292
 https://www.binance.com/en/support/faq/how-to-use-binance-futures-calculator-360036498511
 https://infinityalgoacademy.com/machine-learning-lorentzian-classification/
+https://script.google.com/d/1DZGQI3tHoBILaHuIfrmaA8LEYhFGgIs7sqIWSU1joe9z-WKJH-5Wk3tp/edit?usp=sharing
