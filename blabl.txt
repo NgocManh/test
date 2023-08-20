@@ -19,7 +19,7 @@ https://script.google.com/d/1DZGQI3tHoBILaHuIfrmaA8LEYhFGgIs7sqIWSU1joe9z-WKJH-5
 https://www.binance.com/en/futures/STMXUSDT/calculator
 https://www.tradingcode.net/tradingview/manual-strategy-settings/
 https://courses.theartoftrading.com/pages/macd-strategy-2-profit-targets-in-pine-script
-
+https://zenandtheartoftrading.com/indicators/volume/
 //
 // @author LazyBear 
 // List of all my indicators: https://www.tradingview.com/v/4IneGo8h/
