@@ -22,6 +22,7 @@ https://courses.theartoftrading.com/pages/macd-strategy-2-profit-targets-in-pine
 https://zenandtheartoftrading.com/indicators/volume/
 https://courses.theartoftrading.com/pages/a-simple-pullback-strategy-in-pine-script
 https://www.tradingcode.net/tradingview/limit-order-entry/
+https://www.tradingview.com/chart/JnkjUHR6/?symbol=BINANCE%3A1INCHUSDT.P
 //
 // @author LazyBear 
 // List of all my indicators: https://www.tradingview.com/v/4IneGo8h/
