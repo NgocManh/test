@@ -23,6 +23,7 @@ https://zenandtheartoftrading.com/indicators/volume/
 https://courses.theartoftrading.com/pages/a-simple-pullback-strategy-in-pine-script
 https://www.tradingcode.net/tradingview/limit-order-entry/
 https://www.tradingview.com/chart/JnkjUHR6/?symbol=BINANCE%3A1INCHUSDT.P
+https://www.tradingview.com/script/9MJO3AgE-TradingView-Alerts-to-MT4-MT5-dynamic-variables-NON-REPAINTING/
 //
 // @author LazyBear 
 // List of all my indicators: https://www.tradingview.com/v/4IneGo8h/
