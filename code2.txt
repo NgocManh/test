@@ -1,0 +1,210 @@
+Sub PrintType()
+
+    'Dim x As Long
+    'x = FindRowByID(30, 2, 1)
+    'Debug.Print Sheets(1).Cells(6, "A").Value
+    
+    Sheets(3).Cells(5, "P").Value = "00:00"
+    
+    Debug.Print Sheets(3).Cells(5, 9).End(xlToLeft).Value
+    
+'    Dim typeCheck As Variant
+'
+'    typeCheck = Sheets(2).Cells(3, "I").Text
+'
+'    Dim shift1Comein As String
+'    Dim shift1Comeout As String
+'    Dim shift2Comein As String
+'    Dim shift2Comeout As String
+'    Dim numRow As Integer
+'    Dim idxCol As Integer
+'
+'    numRow = 29
+'    idxCol = 9
+'
+'    shift1Comein = Sheets(2).Cells(numRow, idxCol).Text
+'    shift1Comeout = Sheets(2).Cells(numRow, idxCol + 1).Text
+'    shift2Comein = Sheets(2).Cells(numRow + 1, idxCol).Text
+'    shift2Comeout = Sheets(2).Cells(numRow + 1, idxCol + 1).Text
+'
+'    Debug.Print shift1Comein
+'    Debug.Print shift1Comeout
+'    Debug.Print shift2Comein
+'    Debug.Print shift2Comeout
+'
+'
+'
+'    If shift1Comein <> shift1Comeout Then
+'        If shift2Comein <> shift2Comeout Then
+'            Debug.Print shift1Comein & " -> " & shift2Comeout
+'        Else
+'            Debug.Print shift1Comein & " -> " & shift1Comeout
+'        End If
+'    Else
+'        Debug.Print shift2Comein & " -> " & shift2Comeout
+'    End If
+    
+End Sub
+
+
+
+Sub out()
+
+    Dim listDates As ArrayList
+    Dim listCols  As ArrayList
+    Dim wsChamcong As Worksheet
+    Dim wsLichDangKi As Worksheet
+    Dim sheetChamCong As Integer
+    Dim sheetLichDangKi As Integer
+    
+    Dim lastRow As Long
+    Dim rowContainTimeComein As Integer
+    Set listDates = New ArrayList
+    Set listCols = New ArrayList
+    
+    sheetChamCong = 1          ''''''''
+    sheetLichDangKi = 3        ''''''''''''''
+    rowContainTimeComein = 6   '''''''
+    Set wsChamcong = Sheets(sheetChamCong)
+    Set wsLichDangKi = Sheets(sheetLichDangKi)
+    
+       
+    For Each cell In wsLichDangKi.Range(rowContainTimeComein & ":" & rowContainTimeComein).Cells
+        If cell.Value = "COMEIN2" Then
+            listCols.Add cell.Column
+            listDates.Add wsLichDangKi.Cells(cell.Row - 1, cell.Column).End(xlToLeft).Value
+
+        End If
+    Next cell
+        
+    lastRow = wsChamcong.Cells(wsChamcong.Rows.Count, 1).End(xlUp).Row
+
+    
+    Dim colNgaySheetChamCong As Integer
+    Dim colMaNVSheetChamCong As Integer
+    Dim colMaNVSheetLichDangKi As Integer
+    Dim idlLast As Integer
+    Dim targetComein As String
+    Dim targetComeout As String
+    
+    
+    targetComein = "M"
+    targetComeout = "N"
+    colNgayChamCong = 1
+    colMaNVSheetChamCong = 4
+    colMaNVSheetLichDangKi = 3
+    
+    Dim startCellSheetChamCong As Long
+    Dim cur As Range
+    Dim id As String
+    Dim numRow As Long
+    Dim dateCur As Date
+    Dim idxDate As Integer
+    startCellSheetChamCong = 5
+    
+    
+    idLast = ""
+    numRow = 0
+    For i = startCellSheetChamCong To lastRow
+        id = CStr(wsChamcong.Cells(i, colMaNVSheetChamCong).Value)
+                     
+        If idLast <> id Then
+            'Debug.Print numRow
+            idLast = id
+            numRow = FindRowByID(id, sheetLichDangKi, colMaNVSheetLichDangKi)
+        End If
+        
+        If numRow > 0 Then
+            dateCur = CDate(wsChamcong.Cells(i, colNgayChamCong).Value)
+            idxDate = FindIdx(dateCur, listDates)
+            If idxDate <> -1 Then
+                Dim idxCol As Integer
+                idxCol = listCols(idxDate)
+                
+                Dim shift1Comein As String
+                Dim shift1Comeout As String
+                Dim shift2Comein As String
+                Dim shift2Comeout As String
+                Dim resIn As Date
+                Dim resOut As Date
+                shift1Comein = Sheets(sheetLichDangKi).Cells(numRow, idxCol).Text
+                shift1Comeout = Sheets(sheetLichDangKi).Cells(numRow, idxCol + 1).Text
+                shift2Comein = Sheets(sheetLichDangKi).Cells(numRow + 1, idxCol).Text
+                shift2Comeout = Sheets(sheetLichDangKi).Cells(numRow + 1, idxCol + 1).Text
+                
+                resIn = CDate("00:00")
+                resOut = CDate("00:00")
+                
+                If shift1Comein <> "" And shift1Comeout <> "" Then
+                    If shift1Comein <> shift1Comeout Then
+                        If shift2Comein <> "" And shift2Comeout <> "" Then
+                            If shift2Comein <> shift2Comeout Then
+                                resIn = CDate(shift1Comein)
+                                resOut = CDate(shift2Comeout)
+                            Else
+                                resIn = CDate(shift1Comein)
+                                resOut = CDate(shift1Comeout)
+                            End If
+                        End If
+                    ElseIf shift2Comein <> "" And shift2Comeout <> "" Then
+                        resIn = CDate(shift2Comein)
+                        resOut = CDate(shift2Comeout)
+                    End If
+                ElseIf shift2Comein <> "" And shift2Comeout <> "" Then
+                    resIn = CDate(shift2Comein)
+                    resOut = CDate(shift2Comeout)
+                End If
+                
+                Sheets(sheetChamCong).Cells(i, targetComein).Value = CDate(resIn)
+                Sheets(sheetChamCong).Cells(i, targetComeout).Value = CDate(resOut)
+                
+            End If
+        End If
+        
+        
+    Next i
+End Sub
+
+
+
+
+Function FindRowByID(id As String, numSheet As Integer, col As Integer) As Long
+    Dim ws As Worksheet
+    Dim lastRow As Long
+    Dim rng As Range
+    Dim cell As Range
+
+    Set ws = ThisWorkbook.Sheets(numSheet) ' Thay d?i tên Sheet1 n?u c?n thi?t
+    lastRow = ws.Cells(ws.Rows.Count, col).End(xlUp).Row ' Tìm hàng cu?i cùng trong c?t 1
+    
+    Set rng = ws.Cells(1, col).Resize(lastRow)
+    
+    For Each cell In rng ' Duy?t qua t?ng ô trong ph?m vi
+        If cell.Value = id Then ' Ki?m tra n?u giá tr? c?a ô trùng v?i ID
+            FindRowByID = cell.Row ' Tr? v? s? hàng c?a ô trùng kh?p
+            Exit Function ' Thoát kh?i hàm sau khi tìm th?y k?t qu?
+        End If
+    Next cell
+
+    ' N?u không tìm th?y ID trong c?t 1, tr? v? giá tr? 0 ho?c m?t giá tr? khác d? ch? ra không kh?p
+    FindRowByID = 0
+End Function
+
+Function FindIdx(dt As Date, listDates As ArrayList) As Integer
+
+    Dim idx As Integer
+    
+    Dim cnt As Integer
+    
+    cnt = listDates.Count - 1
+    
+    For i = 0 To cnt
+        If CDate(listDates(i)) = CDate(dt) Then
+            FindIdx = i
+            Exit Function
+        End If
+    Next i
+        
+    FindIdx = -1
+    
+End Function
