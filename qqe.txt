@@ -1,3 +1,4 @@
+https://myservices-ngocmanhcntt3.console.oraclecloud.com/mycloud/cloudportal/gettingStarted
 //@version=4
 //study(title="Divergence Indicator", format=format.price)
 //GOOGL setting  5 , close, 3 , 1  profitLevel at 75 shows win rate  87.21 %  profit factor 7.059
