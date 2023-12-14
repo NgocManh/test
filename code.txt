@@ -1,240 +1,176 @@
-Sub test()
+// This work is licensed under a Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) https://creativecommons.org/licenses/by-nc-sa/4.0/
+// © LuxAlgo
 
-    Dim x As String
-    Dim y As String
+//@version=5
+indicator("Market Structure CHoCH/BOS (Fractal) [LuxAlgo]", "LuxAlgo - Market Structure (Fractal)", overlay = true, max_lines_count = 500, max_labels_count = 500)
+//------------------------------------------------------------------------------
+// Settings
+//-----------------------------------------------------------------------------{
+length = input.int(5, minval = 3)
+
+//Colors
+showBull = input(true, 'Bullish Structures', inline = 'bull', group = 'Style')
+bullCss = input.color(#089981, '', inline = 'bull', group = 'Style')
+
+showBear = input(true, 'Bearish Structures', inline = 'bear', group = 'Style')
+bearCss = input.color(#f23645, '', inline = 'bear', group = 'Style')
+
+showSupport = input(false, 'Support', inline = 's', group = 'Style')
+supCss = input.color(#089981, '', inline = 's', group = 'Style')
+
+showResistance = input(false, 'Resistance', inline = 'r', group = 'Style')
+resCss = input.color(#f23645, '', inline = 'r', group = 'Style')
+
+//Dashboard
+showDash  = input(false, 'Show Dashboard', group = 'Dashboard')
+dashLoc  = input.string('Top Right', 'Location', options = ['Top Right', 'Bottom Right', 'Bottom Left'], group = 'Dashboard')
+textSize = input.string('Small', 'Size'        , options = ['Tiny', 'Small', 'Normal']                 , group = 'Dashboard')
+
+//-----------------------------------------------------------------------------}
+//Types
+//-----------------------------------------------------------------------------{
+type fractal
+    float value
+    int loc
+    bool iscrossed
+
+//-----------------------------------------------------------------------------}
+//Fractal Detection
+//-----------------------------------------------------------------------------{
+var p = int(length/2)
+n = bar_index
+
+dh = math.sum(math.sign(high - high[1]), p)
+dl = math.sum(math.sign(low - low[1]), p)
+
+bullf = dh == -p and dh[p] == p and high[p] == ta.highest(length)
+bearf = dl == p and dl[p] == -p and low[p] == ta.lowest(length)
+
+bullf_count = ta.cum(bullf ? 1 : 0)
+bearf_count = ta.cum(bearf ? 1 : 0)
+
+//-----------------------------------------------------------------------------}
+//Bullish market structure
+//-----------------------------------------------------------------------------{
+var upper = fractal.new()
+var line lower_lvl = na
+var label ms_lbl = na
+var bull_ms_count = 0
+var broken_sup = false
+var os = 0
+
+if bullf
+    upper.value := high[p]
+    upper.loc := n-p
+    upper.iscrossed := false
+
+if ta.crossover(close, upper.value) and not upper.iscrossed
+    line.new(upper.loc, upper.value, n, upper.value, color = showBull ? bullCss : na)
+
+    ms_lbl := label.new(int(math.avg(n, upper.loc)), upper.value, os == -1 ? 'ChoCH' : 'BOS'
+      , color = color(na)
+      , textcolor = showBull ? bullCss : na
+      , style = label.style_label_down
+      , size = size.tiny)
+
+    //Set support
+    k = 2
+    min = low[1]
+    for i = 2 to (n - upper.loc)-1
+        min := math.min(low[i], min)
+        k := low[i] == min ? i : k
+
+    if showSupport
+        lower_lvl := line.new(n-k, min, n, min, color = bullCss, style = line.style_dashed)
+        broken_sup := false
+
+    upper.iscrossed := true
+    bull_ms_count += 1
+    os := 1
+
+else if showSupport and not broken_sup
+    lower_lvl.set_x2(n)
+
+    if close < lower_lvl.get_y2()
+        broken_sup := true
+
+//-----------------------------------------------------------------------------}
+//Bearish market structure
+//-----------------------------------------------------------------------------{
+var lower = fractal.new()
+var line upper_lvl = na
+var broken_res = false
+var bear_ms_count = 0
+
+if bearf
+    lower.value := low[p]
+    lower.loc := n-p
+    lower.iscrossed := false
+
+if ta.crossunder(close, lower.value) and not lower.iscrossed
+    line.new(lower.loc, lower.value, n, lower.value, color = showBear ? bearCss : na)
     
-    x = Sheets(1).Cells(128, "D").Value
-    y = Sheets(2).Cells(6, "C").Value
+    label.new(int(math.avg(n, lower.loc)), lower.value, os == 1 ? 'ChoCH' : 'BOS'
+      , color = color(na)
+      , textcolor = showBear ? bearCss : na
+      , style = label.style_label_up
+      , size = size.tiny)
+
+    //Set resistance
+    k = 2
+    max = high[1]
+    for i = 2 to (n - lower.loc)-1
+        max := math.max(high[i], max)
+        k := high[i] == max ? i : k
+
+    if showResistance
+        upper_lvl := line.new(n-k, max, n, max, color = bearCss, style = line.style_dashed)
+        broken_res := false
     
-    Debug.Print x
-    Debug.Print y
+    lower.iscrossed := true
+    bear_ms_count += 1
+    os := -1
+
+else if showResistance and not broken_res
+    upper_lvl.set_x2(n)
+
+    if close > upper_lvl.get_y2()
+        broken_res := true
+
+//-----------------------------------------------------------------------------}
+//Dashboard
+//-----------------------------------------------------------------------------{
+var table_position = dashLoc == 'Bottom Left' ? position.bottom_left 
+  : dashLoc == 'Top Right' ? position.top_right 
+  : position.bottom_right
+
+var table_size = textSize == 'Tiny' ? size.tiny 
+  : textSize == 'Small' ? size.small 
+  : size.normal
+
+var tb = table.new(table_position, 2, 3
+  , bgcolor = #1e222d
+  , border_color = #373a46
+  , border_width = 1
+  , frame_color = #373a46
+  , frame_width = 1)
+
+if showDash
+    if barstate.isfirst
+        tb.cell(0, 0, 'Structure To Fractal %', text_color = color.white, text_size = table_size)
+        tb.merge_cells(0,0,1,0)
+
+        tb.cell(0, 1, 'Bullish', text_color = #089981, text_size = table_size)
+        tb.cell(1, 1, 'Bearish', text_color = #f23645, text_size = table_size)
     
-    If x = y Then
-        Debug.Print "yes"
-    Else
-        Debug.Print "no"
-    End If
-End Sub
+    if barstate.islast
+        tb.cell(0, 2, str.tostring(bull_ms_count / bullf_count * 100, format.percent), text_color = #089981, text_size = table_size)
+        tb.cell(1, 2, str.tostring(bear_ms_count / bearf_count * 100, format.percent), text_color = #f23645, text_size = table_size)
 
+//-----------------------------------------------------------------------------}
+//Plots
+//-----------------------------------------------------------------------------{
+plot(broken_res and not broken_res[1] ? low : na, 'Resistance Breakout', #089981, 2, plot.style_circles)
+plot(broken_sup and not broken_sup[1] ? high : na, 'Support Breakout', #f23645, 2, plot.style_circles)
 
-Sub out()
-
-    Dim listDates As ArrayList
-    Dim listCols  As ArrayList
-    Dim wsChamcong As Worksheet
-    Dim wsLichDangKi As Worksheet
-    Dim sheetChamCong As Integer
-    Dim sheetLichDangKi As Integer
-    
-    Dim lastRow As Long
-    Dim rowContainTimeComein As Integer
-    Set listDates = New ArrayList
-    Set listCols = New ArrayList
-    
-    sheetChamCong = 1
-    sheetLichDangKi = 3
-    rowContainTimeComein = 6 'fill in
-    Set wsChamcong = Sheets(sheetChamCong)
-    Set wsLichDangKi = Sheets(sheetLichDangKi)
-    
-    Dim rowDate As Integer
-    rowDate = 5 'fill in
-       
-    For Each cell In wsLichDangKi.Range(rowContainTimeComein & ":" & rowContainTimeComein).Cells
-        If cell.Value = "COMEIN2" Then
-            listCols.Add cell.Column
-            listDates.Add wsLichDangKi.Cells(rowDate, cell.Offset(-1, 0).End(xlToLeft).Column).Value
-        End If
-    Next cell
-        
-    lastRow = wsChamcong.Cells(wsChamcong.Rows.Count, 1).End(xlUp).Row
-
-    
-    Dim colNgaySheetChamCong As Integer
-    Dim colMaNVSheetChamCong As Integer
-    Dim colMaNVSheetLichDangKi As Integer
-    Dim idlLast As Integer
-    Dim targetComein As String
-    Dim targetComeout As String
-    
-    
-    targetComein = "M"  'fill in
-    targetComeout = "N" 'fill in
-    colNgayChamCong = 1 'fill in
-    colMaNVSheetChamCong = 4 'fill in
-    colMaNVSheetLichDangKi = 3 'fill in
-    
-    Dim startCellSheetChamCong As Long
-    Dim cur As Range
-    Dim id As String
-    Dim numRow As Long
-    Dim dateCur As Date
-    Dim idxDate As Integer
-    Dim idLast As String
-    startCellSheetChamCong = 5 'fill in
-    
-    
-    idLast = "a"
-    numRow = 0
-    For i = startCellSheetChamCong To lastRow
-        id = CStr(wsChamcong.Cells(i, colMaNVSheetChamCong).Value)
-                     
-        If idLast <> id Then
-            'Debug.Print numRow
-            idLast = id
-            numRow = FindRowByID(id, sheetLichDangKi, colMaNVSheetLichDangKi)
-        End If
-        
-        If numRow > 0 Then
-            dateCur = CDate(wsChamcong.Cells(i, colNgayChamCong).Value)
-            idxDate = FindIdx(dateCur, listDates)
-            If idxDate <> -1 Then
-                Dim idxCol As Integer
-                idxCol = listCols(idxDate)
-                
-                Dim shift1Comein As String
-                Dim shift1Comeout As String
-                Dim shift2Comein As String
-                Dim shift2Comeout As String
-                Dim resIn As Date
-                Dim resOut As Date
-                shift1Comein = Sheets(sheetLichDangKi).Cells(numRow, idxCol).Text
-                shift1Comeout = Sheets(sheetLichDangKi).Cells(numRow, idxCol + 1).Text
-                shift2Comein = Sheets(sheetLichDangKi).Cells(numRow + 1, idxCol).Text
-                shift2Comeout = Sheets(sheetLichDangKi).Cells(numRow + 1, idxCol + 1).Text
-                
-                resIn = CDate("00:00")
-                resOut = CDate("00:00")
-                
-                If shift1Comein <> "" And shift1Comeout <> "" Then
-                    If shift1Comein <> shift1Comeout Then
-                        If shift2Comein <> "" And shift2Comeout <> "" Then
-                            If shift2Comein <> shift2Comeout Then
-                                resIn = CDate(shift1Comein)
-                                resOut = CDate(shift2Comeout)
-                            Else
-                                resIn = CDate(shift1Comein)
-                                resOut = CDate(shift1Comeout)
-                            End If
-                        End If
-                    ElseIf shift2Comein <> "" And shift2Comeout <> "" Then
-                        resIn = CDate(shift2Comein)
-                        resOut = CDate(shift2Comeout)
-                    End If
-                ElseIf shift2Comein <> "" And shift2Comeout <> "" Then
-                    resIn = CDate(shift2Comein)
-                    resOut = CDate(shift2Comeout)
-                End If
-                
-                Sheets(sheetChamCong).Cells(i, targetComein).Value = CDate(resIn)
-                Sheets(sheetChamCong).Cells(i, targetComeout).Value = CDate(resOut)
-                
-            End If
-        End If
-        
-        
-    Next i
-End Sub
-
-
-
-Function FindRowByID(id As String, numSheet As Integer, col As Integer) As Long
-    Dim ws As Worksheet
-    Dim lastRow As Long
-    Dim rng As Range
-    Dim cell As Range
-
-    Set ws = ThisWorkbook.Sheets(numSheet) ' Thay d?i tên Sheet1 n?u c?n thi?t
-    lastRow = ws.Cells(ws.Rows.Count, col).End(xlUp).Row ' Tìm hàng cu?i cùng trong c?t 1
-    
-    Set rng = ws.Cells(1, col).Resize(lastRow)
-    
-    For Each cell In rng ' Duy?t qua t?ng ô trong ph?m vi
-        If CStr(cell.Value) = id Then ' Ki?m tra n?u giá tr? c?a ô trùng v?i ID
-            FindRowByID = cell.Row ' Tr? v? s? hàng c?a ô trùng kh?p
-            Exit Function ' Thoát kh?i hàm sau khi tìm th?y k?t qu?
-        End If
-    Next cell
-
-    ' N?u không tìm th?y ID trong c?t 1, tr? v? giá tr? 0 ho?c m?t giá tr? khác d? ch? ra không kh?p
-    FindRowByID = 0
-End Function
-
-Function FindIdx(dt As Date, listDates As ArrayList) As Integer
-
-    Dim idx As Integer
-    
-    Dim cnt As Integer
-    
-    cnt = listDates.Count - 1
-    
-    For i = 0 To cnt
-        If CDate(listDates(i)) = CDate(dt) Then
-            FindIdx = i
-            Exit Function
-        End If
-    Next i
-        
-    FindIdx = -1
-    
-End Function
-
-
-
-Sub ahihi()
- Dim x As String
- Dim y As String
- Dim startCell As Integer
- Dim lastRow As String
- Dim colNeededMap As String
- Dim sheetNeededMap As Worksheet
- Set sheetNeededMap = Sheets(2)
- 
- lastRow = sheetNeededMap.Cells(sheetNeededMap.Rows.Count, 1).End(xlUp).Row
- 
-
- startCell = 4 'fill in
- colNeededMap = "C" 'fill in
- Dim nameVi As String
- Dim nameEn As String
- 
- For i = startCell To lastRow
-        nameVi = CStr(sheetNeededMap.Cells(i, colNeededMap).Value)
-        nameEn = CStr(sheetNeededMap.Cells(i, colNeededMap).Offset(0, 1).Value)
-        Call FindIdxName(Trim(nameVi), Trim(nameEn))
-'        If idLast <> id Then
-'            'Debug.Print numRow
-'            idLast = id
-'            numRow = FindRowByID(id, sheetLichDangKi, colMaNVSheetLichDangKi)
-'        End If
- Next i
-        
-End Sub
-
-
-Sub FindIdxName(nameVi As String, nameEn As String)
-
-    Dim idx As Integer
-
-    Dim cnt As Integer
-
-    Dim colNeededMap As String
-    Dim sheetNeededMap As Worksheet
-    Set sheetNeededMap = Sheets(3)
-
-    lastRow = sheetNeededMap.Cells(sheetNeededMap.Rows.Count, 1).End(xlUp).Row
-
-    colNeededMap = "C"  'fill in
-    
-    Dim tmp As String
-    For i = 1 To lastRow
-        tmp = Trim(CStr(sheetNeededMap.Cells(i, colNeededMap).Value))
-        If tmp = nameVi Then
-            sheetNeededMap.Cells(i, colNeededMap).Value = nameEn
-            Exit Sub
-        End If
-    Next i
-
-End Sub
-
-
+//-----------------------------------------------------------------------------}
