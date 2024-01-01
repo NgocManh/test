@@ -239,3 +239,483 @@ showRepaint = input.bool(true)
 plot(last ? tmau_temp : tmau, title = "TMA Up", color = colorBands, linewidth=tmawidth, style = plot.style_line, offset = showRepaint ? -HalfLength : 0)
 plot(last ? tmac_temp : tmac, title = "TMA Mid", color = colorBuffer, linewidth=tmawidth, style = plot.style_line, offset = showRepaint ? -HalfLength : 0)
 plot(last ? tmad_temp : tmad, title = "TMA Down", color = colorBands, linewidth=tmawidth, style = plot.style_line, offset = showRepaint ? -HalfLength : 0)
+
+// threeengulfing_mode = input.bool(title="3 Candle Engulfing Signal", defval=true, group="== ENGULFING SIGNAL ==", inline = '9')
+// engulfing_mode = input.bool(title="Normal Engulfing Signal", defval=false, group="== ENGULFING SIGNAL ==", inline = '9')
+
+// // bullish engulfing (Bueng)
+// Bueng = open[3] > close[3] and open[2] > close[2] and open[1] > close[1] and close > open and (close >= open[1] or close[1] >= open) and close - open > open[1] - close[1]
+// plotshape(threeengulfing_mode ? Bueng : na, style=shape.diamond, location=location.belowbar, color=color.new(#00e926,0), size=size.small, text = "3Engulfing", textcolor = color.new(#4eff64,0))
+
+// // bearish engulfing (Beeng)
+// Beeng = open[3] < close[3] and open[2] < close[2] and close[1] > open[1] and open > close and (open >= close[1] or open[1] >= close) and open - close > close[1] - open[1]
+// plotshape(threeengulfing_mode ? Beeng : na, style=shape.diamond, location=location.abovebar, color=color.new(#ff571b,0), size=size.small, text = "3Engulfing", textcolor = color.new(#ff5a9b,0))
+
+// // bullish engulfing (Bueng)
+// Bueng2 = open[3] > close[3] ? open[2] > close[2] ? open[1] > close[1] ? close > open ? close >= open[1] ? close[1] >= open ? close - open > open[1] - close[1] ? color.blue : na : na : na : na : na : na : na
+// barcolor(threeengulfing_mode ? Bueng2 : na)
+
+// // bearish engulfing (Beeng)
+// Beeng2 = open[3] < close[3] ? open[2] < close[2] ? close[1] > open[1] ? open > close ? open >= close[1] ? open[1] >= close ? open - close > close[1] - open[1] ? color.white : na : na : na : na : na : na : na
+// barcolor(threeengulfing_mode ? Beeng2 : na)
+
+// ////////////////////////////////////////////////////////////////////////////////////
+
+// /////////// Normal Setting ////////////////
+// srcstrategy = input(close, title='Source Multi MA', group = '= Multi MA SETTING =', tooltip = 'Normal Line = Close \nSmooth Line = ohlc4')
+
+// ///////////// EMA/SMA SETTING /////////////
+// pricestrategy = request.security(syminfo.tickerid, timeframe.period, srcstrategy)
+// fastSW = input.bool(title='Show Fast MA Line', defval=false, group = '= Multi MA SETTING =', inline = '11')
+// fastcolor = input.color(color.new(color.red,0), group = '= Multi MA SETTING =', inline = '110', title = 'Fast MA Color')
+// slowSW = input.bool(title='Show Slow MA Line', defval=false, group = '= Multi MA SETTING =', inline = '11')
+// slowcolor = input.color(color.new(color.yellow,0), group = '= Multi MA SETTING =', inline = '110', title = 'Slow MA Color')
+// ma1strategy = input(18, title='Fast MA Length', group = '= Multi MA SETTING =', inline = '12')
+// type1strategy = input.string('EMA', 'Fast MA Type', options=['SMA', 'EMA', 'WMA', 'HMA', 'RMA', 'VWMA'], group = '= Multi MA SETTING =', tooltip = 'SMA / EMA / WMA / HMA / RMA / VWMA', inline = '12')
+
+// ma3strategy = input(34, title='Slow MA Length', group = '= Multi MA SETTING =', inline = '13')
+// type3strategy = input.string('EMA', 'Slow MA Type', options=['SMA', 'EMA', 'WMA', 'HMA', 'RMA', 'VWMA'], group = '= Multi MA SETTING =', tooltip = 'SMA / EMA / WMA / HMA / RMA / VWMA', inline = '13')
+
+// price1strategy = switch type1strategy
+// 	"EMA" => ta.ema(pricestrategy, ma1strategy)
+// 	"SMA" => ta.sma(pricestrategy, ma1strategy)
+// 	"WMA" => ta.wma(pricestrategy, ma1strategy)
+// 	"HMA" => ta.hma(pricestrategy, ma1strategy)
+// 	"RMA" => ta.rma(pricestrategy, ma1strategy)
+// 	"VWMA" => ta.vwma(pricestrategy, ma1strategy)
+		
+// price3strategy = switch type3strategy
+// 	"EMA" => ta.ema(pricestrategy, ma3strategy)
+// 	"SMA" => ta.sma(pricestrategy, ma3strategy)
+// 	"WMA" => ta.wma(pricestrategy, ma3strategy)
+// 	"HMA" => ta.hma(pricestrategy, ma3strategy)
+// 	"RMA" => ta.rma(pricestrategy, ma3strategy)
+// 	"VWMA" => ta.vwma(pricestrategy, ma3strategy)
+
+// FastL = plot(fastSW ? price1strategy : na, 'Fast MA', color=fastcolor, style = plot.style_line, linewidth=2)
+// SlowL = plot(slowSW ? price3strategy : na, 'Slow MA', color=slowcolor, style = plot.style_line, linewidth=2)
+
+// ///////////////////////////////////////////////////////////////////////////////////
+
+// stobg_mode = input.bool(title="Stochastic RSI Background Paint", defval=true, group="== STO BACKGROUND ==")
+// stobg_plot = input.bool(title="STO-TEXT", defval=false, group="== STO BACKGROUND ==", inline = 'STOT1')
+// stobull_text = input.color(title = 'BULL', defval = color.white, group = '== STO BACKGROUND ==', inline = 'STOT1')
+// stobear_text = input.color(title = 'BEAR', defval = color.orange, group = '== STO BACKGROUND ==', inline = 'STOT1')
+// lengthMACD = input(title='Length', defval=21, group = '== STO BACKGROUND ==', inline = '15')
+// offsetMACD = input(title='Offset', defval=0, group = '== STO BACKGROUND ==', inline = '15')
+// srcMACD = input(close, title='Source', group = '== STO BACKGROUND ==', inline = '16')
+// length2MACD = input(title='Trigger Length', defval=6, group = '== STO BACKGROUND ==', inline = '16')
+// bullstobg = input.color(title = 'Bull BG Color', defval = color.green, group = '== STO BACKGROUND ==', inline = 'STOBG1')
+// bearstobg = input.color(title = 'Bear BG Color', defval = color.red, group = '== STO BACKGROUND ==', inline = 'STOBG1')
+// transstobg = input.int(defval = 75, title = 'Trans', minval = 0, maxval = 100, group = '== STO BACKGROUND ==', inline = 'STOBG1')
+
+// lsma = ta.linreg(srcMACD, lengthMACD, offsetMACD)
+// lsma2 = ta.linreg(lsma, lengthMACD, offsetMACD)
+// b = lsma - lsma2
+// zlsma2 = lsma + b
+// trig2 = ta.sma(zlsma2, length2MACD)
+
+// c1 = zlsma2 > trig2 ? bullstobg : bearstobg
+// stobull = ta.crossover(zlsma2,trig2)
+// stobear = ta.crossunder(zlsma2, trig2)
+// plotshape(stobg_plot ? stobull : na, title = 'STO-BULL', text = 'STO-BULL', location = location.belowbar, textcolor = stobull_text, size = size.tiny)
+// plotshape(stobg_plot ? stobear : na, title = 'STO-BULL', text = 'STO-BEAR', location = location.abovebar, textcolor = stobear_text, size = size.tiny)
+
+// p1 = plot(stobg_mode ? zlsma2 : na, color=c1, linewidth=0)
+// p2 = plot(stobg_mode ? trig2 : na, color=c1, linewidth=0)
+// fill(p1, p2, color=color.new(c1,transp = transstobg))
+
+// // bullish engulfing
+// bullishEngulfing = open[1] > close[1] ? close > open ? close >= open[1] ? close[1] >= open ? close - open > open[1] - close[1] ? color.purple : na : na : na : na : na
+// barcolor(engulfing_mode ? bullishEngulfing : na)
+
+// // bearish engulfing
+// bearishEngulfing = close[1] > open[1] ? open > close ? open >= close[1] ? open[1] >= close ? open - close > close[1] - open[1] ? color.yellow : na : na : na : na : na
+// barcolor(engulfing_mode ? bearishEngulfing : na)
+
+// bullishEngulfing2 = (open[1] > close[1] and close > open and close >= open[1] and close[1] >= open and close - open > open[1] - close[1]) and (zlsma2 > trig2)
+// bearishEngulfing2 = (close[1] > open[1] and open > close and open >= close[1] and open[1] >= close and open - close > close[1] - open[1]) and (zlsma2 < trig2)
+// plotshape(engulfing_mode ? bullishEngulfing2 : na, style=shape.labelup, location=location.belowbar, color=color.yellow, size=size.auto, text = '↗️')
+// plotshape(engulfing_mode ? bearishEngulfing2 : na, style=shape.labeldown, location=location.abovebar, color=color.white, size=size.auto, text = '↘️')
+
+//Termline = ta.sma(close,200)
+//plot(Termline, "TermLine", color = color.white, linewidth = 2, style = plot.style_line)
+
+// ma_trend_mode = input.bool(title="Show MA LINE For Big Trend", defval=false, group="== BIG TREND ==")
+// srcstrategy_trend = input(close, title='SOURCE OF BIG TREND', group = '== BIG TREND ==', tooltip = 'Normal Line = Close \nSmooth Line = ohlc4')
+// type4strategy = input.string('SMA', 'BIG TREND Type', options=['SMA', 'EMA', 'WMA', 'HMA', 'RMA', 'VWMA'], group = '== BIG TREND ==', tooltip = 'SMA / EMA / WMA / HMA / RMA / VWMA', inline = '19')
+// ma_trend = input(defval = 200, title = "BIG TREND VALUE", group = '== BIG TREND ==', inline = '19')
+// death_mode = input.bool(title="Show SHORT-TERM MA LINE For DEATH CROSS and GOLDEN CROSS", defval=false, group="== BIG TREND ==")
+// deathstrategy = input.string('SMA', 'CROSS MA Type', options=['SMA', 'EMA', 'WMA', 'HMA', 'RMA', 'VWMA'], group = '== BIG TREND ==', tooltip = 'SMA / EMA / WMA / HMA / RMA / VWMA', inline = '21')
+// death_trend = input(defval = 50, title = "CROSS MA VALUE", group = '== BIG TREND ==', inline = '21')
+
+
+// matrend = switch type4strategy
+// 	"EMA" => ta.ema(srcstrategy_trend, ma_trend)
+// 	"SMA" => ta.sma(srcstrategy_trend, ma_trend)
+// 	"WMA" => ta.wma(srcstrategy_trend, ma_trend)
+// 	"HMA" => ta.hma(srcstrategy_trend, ma_trend)
+// 	"RMA" => ta.rma(srcstrategy_trend, ma_trend)
+// 	"VWMA" => ta.vwma(srcstrategy_trend, ma_trend)
+
+// deathtrend = switch deathstrategy
+// 	"EMA" => ta.ema(srcstrategy_trend, death_trend)
+// 	"SMA" => ta.sma(srcstrategy_trend, death_trend)
+// 	"WMA" => ta.wma(srcstrategy_trend, death_trend)
+// 	"HMA" => ta.hma(srcstrategy_trend, death_trend)
+// 	"RMA" => ta.rma(srcstrategy_trend, death_trend)
+// 	"VWMA" => ta.vwma(srcstrategy_trend, death_trend)
+
+// mycol = matrend > close ? color.white : color.blue
+// deathcol = deathtrend > matrend ? color.new(color.green,50) : color.new(color.red,50)
+// plot(ma_trend_mode ? matrend : na, "SMA-TREND",color=mycol,linewidth = 2)
+// plot(death_mode ? deathtrend : na, "DEATH-TREND",color=deathcol,linewidth = 1, style = plot.style_stepline_diamond)
+
+// // Swing Plot
+// //Swing_MODE = input.bool(title="PLOT SWING MODE", defval=true, group = '= SWING SETTING =', tooltip = 'If Mode On = Plot Swing High and Swing Low')
+// Swing_STOP = input.bool(title="SWING MODE", defval=true, group = '== SWING SETTING ==', tooltip = 'If Mode On = Use Stop Loss By Last Swing')
+// pvtLenL = input.int(6, minval=1, title='Length Left', group = '== SWING SETTING ==', inline = '23')
+// pvtLenR = input.int(6, minval=1, title='Length Right', group = '== SWING SETTING ==', inline = '23')
+// swhcolor = input.color(defval = color.maroon, title = 'HH Color', inline = 'SWC1', group = '== SWING SETTING ==')
+// swlcolor = input.color(defval = color.green, title = 'LL Color', inline = 'SWC1', group = '== SWING SETTING ==')
+// swhwidth = input.int(defval = 1, title = 'Width', minval = 0, maxval = 4, inline = 'SWC1', group = '== SWING SETTING ==')
+
+// // Get High and Low Pivot Points
+// pvthi_ = ta.pivothigh(high, pvtLenL, pvtLenR)
+// pvtlo_ = ta.pivotlow(low, pvtLenL, pvtLenR)
+
+// // Force Pivot completion before plotting.
+// Shunt = 1  //Wait for close before printing pivot? 1 for true 0 for flase
+// maxLvlLen = 0  //Maximum Extension Length
+// pvthi = pvthi_[Shunt]
+// pvtlo = pvtlo_[Shunt]
+
+// // Count How many candles for current Pivot Level, If new reset.
+// counthi = ta.barssince(not na(pvthi))
+// countlo = ta.barssince(not na(pvtlo))
+
+// pvthis = fixnan(pvthi)
+// pvtlos = fixnan(pvtlo)
+// hipc = ta.change(pvthis) != 0 ? na : swhcolor
+// lopc = ta.change(pvtlos) != 0 ? na : swlcolor
+
+// // Display Pivot lines
+// plot(Swing_STOP ? maxLvlLen == 0 or counthi < maxLvlLen ? pvthis : na : na, color=hipc, linewidth=swhwidth, offset=-pvtLenR - Shunt, title='Top Levels')
+// plot(Swing_STOP ? maxLvlLen == 0 or countlo < maxLvlLen ? pvtlos : na : na, color=lopc, linewidth=swhwidth, offset=-pvtLenR - Shunt, title='Bottom Levels')
+// plot(Swing_STOP ? maxLvlLen == 0 or counthi < maxLvlLen ? pvthis : na : na, color=hipc, linewidth=swhwidth, offset=0, title='Top Levels 2')
+// plot(Swing_STOP ? maxLvlLen == 0 or countlo < maxLvlLen ? pvtlos : na : na, color=lopc, linewidth=swhwidth, offset=0, title='Bottom Levels 2')
+
+
+
+// // }
+
+
+// //Dashboard_mode = input.bool(title="Show Dashboard", defval=true, group="= DASH BOARD =")
+// //Start dashboard
+// import jdehorty/EconomicCalendar/1 as calendar
+
+// // ---- Table Settings Start ----//
+// max    = 160    //Maximum Length
+// min    = 10     //Minimum Length
+
+// var GRP5 = "== DASH BOARD SETTING =="
+// var GRP6 = "== DASH BOARD INDICATOR SETTING =="
+// var GRP7 = "== DASH BOARD TABLE SETTING =="
+// // Input setting page start
+// dash_loc    = input.session("Bottom Right","Dashboard Posision"  ,["Top Right","Bottom Right","Top Left","Bottom Left", "Middle Right","Bottom Center"], group = GRP5, inline = 'DB1')
+// text_size   = input.session('Small',"Dashboard Size"  ,options=["Tiny","Small","Normal","Large"]  ,group=GRP5, inline =  'DB1')
+// cell_up     = input.color(color.green,'Up Cell Color'  ,group=GRP5, inline = 'DB2')
+// cell_dn     = input.color(color.red,'Down Cell Color'  ,group=GRP5, inline = 'DB2')
+// cell_Neut   = input.color(color.gray,'Nochange  Cell Color'  ,group=GRP5, inline = 'DB2')
+// row_col     = color.blue
+// col_col     = color.white
+// txt_col     = color.white
+// cell_transp = input.int(60,'Cell Transparency'  ,minval=0  ,maxval=100  ,group=GRP5)
+
+// Header_col  = color.rgb(35, 94, 255)
+// //MACDV color
+// cell_MACDV1 = color.teal
+// cell_MACDV2 = color.green
+// cell_MACDV3 = color.red
+// cell_MACDV4 = color.rgb(194, 179, 47)
+// cell_MACDV5 = color.green
+// cell_MACDV6 = color.red
+// cell_MACDV7 = color.rgb(204, 8, 24)
+// //Momentum color
+// cell_phase1 = color.green
+// cell_phase2 = color.teal
+// cell_phase3 = color.red
+// cell_phase4 = color.red
+// cell_phase5 = color.orange
+// cell_phase6 = color.green
+// // ---- Table Settings End ----}//
+
+// // ---- Indicators Show/Hide Settings Start ----//
+
+// showCls     = input.bool(defval=false, title="Price Close",     group=GRP7, inline = 'DBSHOW1')
+// showMA01    = input.bool(defval=false, title="MA01",            group=GRP7, inline = 'DBSHOW2')
+// showMA02    = input.bool(defval=false, title="MA02",            group=GRP7, inline = 'DBSHOW2')
+// showMACross = input.bool(defval=true, title="Trend",           group=GRP7, inline = 'DBSHOW2')
+// showRSI     = input.bool(defval=true, title="RSI ",            group=GRP7, inline = 'DBSHOW2')
+// showMACDV   = input.bool(defval=true, title="MACDV",           group=GRP7, inline = 'DBSHOW2')
+// showSignalV = input.bool(defval=false, title="SignalV",         group=GRP7, inline = 'DBSHOW4')
+// showMACDV_Status = input.bool(defval=true, title="Condition",  group=GRP7, inline = 'DBSHOW4')
+// showmomentum = input.bool(defval=false, title="Momentum",       group=GRP7, inline = 'DBSHOW4')
+
+// //---- MACD-V code start ----//
+// MACD_fast_length    = input(title="MACD-V Fast", defval=14, group=GRP6, inline = 'DBMACD1')
+// MACD_slow_length    = input(title="MACD-V Slow", defval=26, group=GRP6, inline = 'DBMACD1')
+// MACD_signal_length  = input.int(title="MACD-V Signal ",  minval = 1, maxval = 50, defval = 9, group=GRP6, inline = 'DBMACD2')
+// MACD_atr_length     = input(title="ATR", defval=26, group=GRP6, inline = 'DBMACD2')
+
+
+// // ---- Timeframe Row Show/Hide Settings Start ----//
+
+// f_MACDV(_close) =>
+
+//     //---- Indicators code Start ----//
+//     CLS= _close[1]
+
+//     //---- RSI code start ----//
+//     rsiPeriod   = 14
+//     RSI         = ta.rsi(_close, rsiPeriod)
+
+//     //---- RSI code end ----//
+
+//     //---- EMA 1 code start----//
+//     length_MA1 = input.int(title="MA1",defval=50, minval=1, inline = 'TFROW1')
+//     MA1        = ta.ema(_close, length_MA1)
+//     //plot(MA01, color=color.red, title="MA1")
+//     //---- EMA 1  code end ----//
+
+//     //---- EMA 2 code start---//
+//     length_MA2 = input.int(title="MA2",defval=200, minval=1, inline = 'TFROW1')
+//     MA2        = ta.ema(_close, length_MA2)
+//     //plot(MA02, color=color.blue, title="MA2")
+//     //---- EMA 2  code end ----//
+
+//     // Input seeting page end
+//     // Calculating 
+//     fast_ma =  ta.ema(_close, MACD_fast_length)
+//     slow_ma =  ta.ema(_close, MACD_slow_length)
+//     atr     =  ta.atr(MACD_atr_length)
+//     MACDV   = (((fast_ma - slow_ma)/atr)*100)//[( 12 bar EMA - 26 bar EMA) / ATR(26) ] * 100
+//     SignalV = ta.ema(MACDV, MACD_signal_length)
+//     //---- MACD-V code end ----//
+
+//     //---- Indicators code end ----//
+
+
+//     //-----Condition start
+//     stringmacdv     =(MACDV>150) ? "Wait Continue/Reversal" :(MACDV>50 and MACDV<150 and MACDV>SignalV ) ? "Buy G0" :(MACDV>50 and MACDV<150 and MACDV<SignalV ) ? "Buy Retest":(MACDV<50) and (MACDV>-50) ? "Sideway" :(MACDV<-50 and MACDV>-150 and MACDV>SignalV ) ? "Short go":(MACDV<-50 and MACDV>-150 and MACDV<SignalV ) ? "Short Retest":(MACDV<150) ? "Wait Continue/Reversal" :na
+//     //momentum
+//     stringmomentum  =(CLS>MA1 and CLS>MA2 and MA1<MA2) ? "Accumulation:Stop Sell - Setup Buy" :(CLS>MA1 and CLS>MA2 and MA1>MA2) ? "Runing Up: Buy Runing":(CLS<MA1 and CLS>MA2 and MA1>MA2) ? "Re-Acumulasi: Continue Up":(CLS<MA1 and CLS<MA2 and MA1>MA2) ? "Distribution: Stop Buy-Setup Short":(CLS<MA1 and CLS<MA2 and MA1<MA2) ? "Re-Distribusi: Continue Down":(CLS>MA1 and CLS<MA2 and MA1<MA2) ? "Accumulation-Distribusi: Don't Trade Wait Break":na
+        
+//     //-----Condition end
+
+//     // Return values
+//     [CLS, MA1, MA2, RSI, MACDV, SignalV, stringmacdv, stringmomentum]
+
+// // ] -------- Alerts ----------------- [
+
+
+// //---- Table Position & Size code start {----//
+// var table_position = dash_loc == 'Bottom Right' ? position.bottom_right :
+//   dash_loc == 'Bottom Left' ? position.bottom_left :
+//   dash_loc == 'Middle Right' ? position.middle_right :
+//   dash_loc == 'Bottom Center' ? position.bottom_center :
+//   dash_loc == 'Top Left' ? position.top_right : position.bottom_right
+  
+// var table_text_size = text_size == 'Normal' ? size.normal :
+//   text_size == 'Tiny' ? size.tiny :
+//   text_size == 'Small' ? size.small :
+//   text_size == 'Normal' ? size.normal : size.large
+
+// var t = table.new(table_position,15,math.abs(max-min)+2,
+//   frame_color   =color.new(#f1ff2a, 0),
+//   frame_width   =1,
+//   border_color  =color.new(#f1ff2a,0),
+//   border_width  =1)
+// //---- Table Position & Size code end ----//
+
+// // get values for table
+
+// [CLS_chart, MA1_chart, MA2_chart, RSI_chart, MACDV_chart, SignalV_chart, stringmacdv_chart, stringmomentum_chart] = f_MACDV(close)
+// [CLS_5_min, MA1_5_min, MA2_5_min, RSI_5_min, MACDV_5_min, SignalV_5_min, stringmacdv_5_min, stringmomentum_5_min] = request.security(syminfo.tickerid, "5", f_MACDV(close), lookahead=barmerge.lookahead_on)
+// [CLS_15_min, MA1_15_min, MA2_15_min, RSI_15_min, MACDV_15_min, SignalV_15_min, stringmacdv_15_min, stringmomentum_15_min] = request.security(syminfo.tickerid, "15", f_MACDV(close), lookahead=barmerge.lookahead_on)
+// [CLS_1_hour, MA1_1_hour, MA2_1_hour, RSI_1_hour, MACDV_1_hour, SignalV_1_hour, stringmacdv_1_hour, stringmomentum_1_hour] = request.security(syminfo.tickerid, "60", f_MACDV(close), lookahead=barmerge.lookahead_on)
+// [CLS_4_hour, MA1_4_hour, MA2_4_hour, RSI_4_hour, MACDV_4_hour, SignalV_4_hour, stringmacdv_4_hour, stringmomentum_4_hour] = request.security(syminfo.tickerid, "240", f_MACDV(close), lookahead=barmerge.lookahead_on)
+// [CLS_1_day, MA1_1_day, MA2_1_day, RSI_1_day, MACDV_1_day, SignalV_1_day, stringmacdv_1_day, stringmomentum_1_day] = request.security(syminfo.tickerid, "D", f_MACDV(close), lookahead=barmerge.lookahead_on)
+
+
+// //---- Table Column & Rows code start ----//
+// if (barstate.islast) and showTF1 == true
+//     //---- Table Main Column Headers code start ----//
+//     table.cell(t,1,1, 'TimeFrame',text_color=col_col,text_size=table_text_size,bgcolor=Header_col)
+//     if showCls
+//         table.cell(t,2,1,'L.Close',text_color=col_col,text_size=table_text_size,bgcolor=Header_col)
+//     if showMA01
+//         table.cell(t,3,1,'MA01',text_color=col_col,text_size=table_text_size,bgcolor=Header_col)
+//     if showMA02
+//         table.cell(t,4,1,'MA02',text_color=col_col,text_size=table_text_size,bgcolor=Header_col)
+//     if showMACross
+//         table.cell(t,5,1,'Trend',text_color=col_col,text_size=table_text_size,bgcolor=Header_col)
+//     if showRSI
+//         table.cell(t,6,1,'RSI',text_color=col_col,text_size=table_text_size,bgcolor=Header_col)
+//     if showMACDV
+//         table.cell(t,7,1,'MACDV',text_color=col_col,text_size=table_text_size,bgcolor=Header_col)
+//     if showSignalV
+//         table.cell(t,8,1,'SignalV',text_color=col_col,text_size=table_text_size,bgcolor=Header_col)
+//     if showMACDV_Status
+//         table.cell(t,9,1,'Condition',text_color=col_col,text_size=table_text_size,bgcolor=Header_col)
+//     if showmomentum
+//         table.cell(t,10,1,'Phase Market',text_color=col_col,text_size=table_text_size,bgcolor=Header_col)  
+
+//     //---- Table Main Column Headers code end ----//
+ 
+//     //---- Display data code start ----//
+
+//     //---------------------- Chart period ----------------------------------
+
+//     table.cell(t, 1, 2, "Chart",text_color=color.white,text_size=table_text_size, bgcolor=color.rgb(0, 68, 255))
+//     if  showCls
+//         table.cell(t,2,2, str.tostring(CLS_chart, '#.###'),text_color=color.new(CLS_chart >CLS_chart[2] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(CLS_chart >CLS_chart[2] ? cell_up : cell_dn ,cell_transp))
+//     if  showMA01
+//         table.cell(t,3,2, str.tostring(MA1_chart, '#.###'),text_color=color.new(MA1_chart >MA1_chart[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA1_chart >MA1_chart[1]  ? cell_up : cell_dn ,cell_transp))
+//     if  showMA02
+//         table.cell(t,4,2, str.tostring(MA2_chart, '#.###'),text_color=color.new(MA2_chart >MA2_chart[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA2_chart >MA2_chart[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showMACross
+//         table.cell(t,5,2, MA1_chart > MA2_chart ? "Bullish" : "Bearish",text_color=color.new(MA1_chart > MA2_chart ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA1_chart > MA2_chart ? cell_up : cell_dn ,cell_transp))
+//     if  showRSI
+//         table.cell(t,6,2, str.tostring(RSI_chart, '#.###'),text_color=color.new(RSI_chart > 50 ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(RSI_chart > 50 ? cell_up : cell_dn ,cell_transp))
+//     if  showMACDV
+//         table.cell(t,7,2,str.tostring(MACDV_chart, '#.###'),text_color=color.new(MACDV_chart > MACDV_chart[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MACDV_chart > MACDV_chart[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showSignalV
+//         table.cell(t,8,2,str.tostring(SignalV_chart, '#.###'),text_color=color.new(SignalV_chart > SignalV_chart[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(SignalV_chart> SignalV_chart[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showMACDV_Status
+//         table.cell(t,9,2,stringmacdv_chart,text_color=color.rgb(0, 0, 0),text_size=table_text_size, bgcolor=color.new(MACDV_chart>50 ? cell_up :MACDV_chart<-50 ?  cell_dn:cell_MACDV4  ,cell_transp)) 
+//     if  showmomentum
+//         table.cell(t,10,2,stringmomentum_chart,text_color=color.rgb(2, 2, 2),text_size=table_text_size, bgcolor=color.new(CLS_chart>MA1_chart and CLS_chart>MA2_chart and MA1_chart<MA2_chart ? cell_phase1 : (CLS_chart>MA1_chart and CLS_chart>MA2_chart and MA1_chart>MA2_chart) ? cell_phase2 : (CLS_chart<MA1_chart and CLS_chart>MA2_chart and MA1_chart>MA2_chart) ?cell_phase3 :(CLS_chart<MA1_chart and CLS_chart<MA2_chart and MA1_chart>MA2_chart) ? cell_phase4:(CLS_chart<MA1_chart and CLS_chart<MA2_chart and MA1_chart<MA2_chart) ? cell_phase5:(CLS_chart>MA1_chart and CLS_chart<MA2_chart and MA1_chart<MA2_chart) ? cell_phase6:col_col,cell_transp))
+
+//  //   alert("\nRSI =(" + str.tostring(CLS_chart, '#.###') + ")\n Momentum = (" + str.tostring(stringmomentum_chart) +  ")\n Trend =("+ str.tostring(MA1_chart > MA2_chart ? "Bullish" : "Bearish")+").", alert.freq_once_per_bar_close)
+       
+
+
+// //---------------------- 5 minute chart ----------------------------------
+
+//     table.cell(t,1,3, "5 minute",text_color=color.white,text_size=table_text_size, bgcolor=color.rgb(0, 68, 255))
+//     if  showCls
+//         table.cell(t,2,3, str.tostring(CLS_5_min, '#.###'),text_color=color.new(CLS_5_min >CLS_5_min[2] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(CLS_5_min >CLS_5_min[2] ? cell_up : cell_dn ,cell_transp))
+//     if  showMA01
+//         table.cell(t,3,3, str.tostring(MA1_5_min, '#.###'),text_color=color.new(MA1_5_min >MA1_5_min[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA1_5_min >MA1_5_min[1]  ? cell_up : cell_dn ,cell_transp))
+//     if  showMA02
+//         table.cell(t,4,3, str.tostring(MA2_5_min, '#.###'),text_color=color.new(MA2_5_min >MA2_5_min[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA2_5_min >MA2_5_min[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showMACross
+//         table.cell(t,5,3, MA1_5_min > MA2_5_min ? "Bullish" : "Bearish",text_color=color.new(MA1_5_min > MA2_5_min ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA1_5_min > MA2_5_min ? cell_up : cell_dn ,cell_transp))
+//     if  showRSI
+//         table.cell(t,6,3, str.tostring(RSI_5_min, '#.###'),text_color=color.new(RSI_5_min > 50 ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(RSI_5_min > 50 ? cell_up : cell_dn ,cell_transp))
+//     if  showMACDV
+//         table.cell(t,7,3,str.tostring(MACDV_5_min, '#.###'),text_color=color.new(MACDV_5_min > MACDV_5_min[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MACDV_5_min > MACDV_5_min[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showSignalV
+//         table.cell(t,8,3,str.tostring(SignalV_5_min, '#.###'),text_color=color.new(SignalV_5_min > SignalV_5_min[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(SignalV_5_min> SignalV_5_min[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showMACDV_Status
+//         table.cell(t,9,3,stringmacdv_5_min,text_color=color.rgb(5, 5, 5),text_size=table_text_size, bgcolor=color.new(MACDV_5_min>50 ? cell_up :MACDV_5_min<-50 ?  cell_dn:cell_MACDV4  ,cell_transp)) 
+//     if  showmomentum
+//         table.cell(t,10,3,stringmomentum_5_min,text_color=color.rgb(5, 5, 5),text_size=table_text_size, bgcolor=color.new(CLS_5_min>MA1_5_min and CLS_5_min>MA2_5_min and MA1_5_min<MA2_5_min ? cell_phase1 : (CLS_5_min>MA1_5_min and CLS_5_min>MA2_5_min and MA1_5_min>MA2_5_min) ? cell_phase2 : (CLS_5_min<MA1_5_min and CLS_5_min>MA2_5_min and MA1_5_min>MA2_5_min) ?cell_phase3 :(CLS_5_min<MA1_5_min and CLS_5_min<MA2_5_min and MA1_5_min>MA2_5_min) ? cell_phase4:(CLS_5_min<MA1_5_min and CLS_5_min<MA2_5_min and MA1_5_min<MA2_5_min) ? cell_phase5:(CLS_5_min>MA1_5_min and CLS_5_min<MA2_5_min and MA1_5_min<MA2_5_min) ? cell_phase6:col_col,cell_transp))
+
+
+       
+
+// //---------------------- 15 minute chart ----------------------------------
+
+//     table.cell(t,1,4, "15 minute",text_color=color.rgb(245, 243, 243),text_size=table_text_size, bgcolor=color.rgb(0, 68, 255))
+//     if  showCls
+//         table.cell(t,2,4, str.tostring(CLS_15_min, '#.###'),text_color=color.new(CLS_15_min >CLS_15_min[2] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(CLS_15_min >CLS_15_min[2] ? cell_up : cell_dn ,cell_transp))
+//     if  showMA01
+//         table.cell(t,3,4, str.tostring(MA1_15_min, '#.###'),text_color=color.new(MA1_15_min >MA1_15_min[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA1_15_min >MA1_15_min[1]  ? cell_up : cell_dn ,cell_transp))
+//     if  showMA02
+//         table.cell(t,4,4, str.tostring(MA2_15_min, '#.###'),text_color=color.new(MA2_15_min >MA2_15_min[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA2_15_min >MA2_15_min[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showMACross
+//         table.cell(t,5,4, MA1_15_min > MA2_15_min ? "Bullish" : "Bearish",text_color=color.new(MA1_15_min > MA2_15_min ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA1_15_min > MA2_15_min ? cell_up : cell_dn ,cell_transp))
+//     if  showRSI
+//         table.cell(t,6,4, str.tostring(RSI_15_min, '#.###'),text_color=color.new(RSI_15_min > 50 ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(RSI_15_min > 50 ? cell_up : cell_dn ,cell_transp))
+//     if  showMACDV
+//         table.cell(t,7,4,str.tostring(MACDV_15_min, '#.###'),text_color=color.new(MACDV_15_min > MACDV_15_min[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MACDV_15_min > MACDV_15_min[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showSignalV
+//         table.cell(t,8,4,str.tostring(SignalV_15_min, '#.###'),text_color=color.new(SignalV_15_min > SignalV_15_min[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(SignalV_15_min> SignalV_15_min[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showMACDV_Status
+//         table.cell(t,9,4,stringmacdv_15_min,text_color=color.rgb(7, 7, 7),text_size=table_text_size, bgcolor=color.new(MACDV_15_min>50 ? cell_up :MACDV_15_min<-50 ?  cell_dn:cell_MACDV4  ,cell_transp)) 
+//     if  showmomentum
+//         table.cell(t,10,4,stringmomentum_15_min,text_color=color.rgb(7, 7, 7),text_size=table_text_size, bgcolor=color.new(CLS_15_min>MA1_15_min and CLS_15_min>MA2_15_min and MA1_15_min<MA2_15_min ? cell_phase1 : (CLS_15_min>MA1_15_min and CLS_15_min>MA2_15_min and MA1_15_min>MA2_15_min) ? cell_phase2 : (CLS_15_min<MA1_15_min and CLS_15_min>MA2_15_min and MA1_15_min>MA2_15_min) ?cell_phase3 :(CLS_15_min<MA1_15_min and CLS_15_min<MA2_15_min and MA1_15_min>MA2_15_min) ? cell_phase4:(CLS_15_min<MA1_15_min and CLS_15_min<MA2_15_min and MA1_15_min<MA2_15_min) ? cell_phase5:(CLS_15_min>MA1_15_min and CLS_15_min<MA2_15_min and MA1_15_min<MA2_15_min) ? cell_phase6:col_col,cell_transp))
+
+
+// //---------------------- 1 Hour chart ----------------------------------
+
+//     table.cell(t,1,6, "1 Hour",text_color=color.white,text_size=table_text_size, bgcolor=color.rgb(0, 68, 255))
+//     if  showCls
+//         table.cell(t,2,6, str.tostring(CLS_1_hour, '#.###'),text_color=color.new(CLS_1_hour >CLS_1_hour[2] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(CLS_1_hour >CLS_1_hour[2] ? cell_up : cell_dn ,cell_transp))
+//     if  showMA01
+//         table.cell(t,3,6, str.tostring(MA1_1_hour, '#.###'),text_color=color.new(MA1_1_hour >MA1_1_hour[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA1_1_hour >MA1_1_hour[1]  ? cell_up : cell_dn ,cell_transp))
+//     if  showMA02
+//         table.cell(t,4,6, str.tostring(MA2_1_hour, '#.###'),text_color=color.new(MA2_1_hour >MA2_1_hour[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA2_1_hour >MA2_1_hour[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showMACross
+//         table.cell(t,5,6, MA1_1_hour > MA2_1_hour ? "Bullish" : "Bearish",text_color=color.new(MA1_1_hour > MA2_1_hour ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA1_1_hour > MA2_1_hour ? cell_up : cell_dn ,cell_transp))
+//     if  showRSI
+//         table.cell(t,6,6, str.tostring(RSI_1_hour, '#.###'),text_color=color.new(RSI_1_hour > 50 ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(RSI_1_hour > 50 ? cell_up : cell_dn ,cell_transp))
+//     if  showMACDV
+//         table.cell(t,7,6,str.tostring(MACDV_1_hour, '#.###'),text_color=color.new(MACDV_1_hour > MACDV_1_hour[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MACDV_1_hour > MACDV_1_hour[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showSignalV
+//         table.cell(t,8,6,str.tostring(SignalV_1_hour, '#.###'),text_color=color.new(SignalV_1_hour > SignalV_1_hour[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(SignalV_1_hour> SignalV_1_hour[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showMACDV_Status
+//         table.cell(t,9,6,stringmacdv_1_hour,text_color=color.rgb(7, 7, 7),text_size=table_text_size, bgcolor=color.new(MACDV_1_hour>50 ? cell_up :MACDV_1_hour<-50 ?  cell_dn:cell_MACDV4  ,cell_transp)) 
+//     if  showmomentum
+//         table.cell(t,10,6,stringmomentum_1_hour,text_color=color.rgb(8, 8, 8),text_size=table_text_size, bgcolor=color.new(CLS_1_hour>MA1_1_hour and CLS_1_hour>MA2_1_hour and MA1_1_hour<MA2_1_hour ? cell_phase1 : (CLS_1_hour>MA1_1_hour and CLS_1_hour>MA2_1_hour and MA1_1_hour>MA2_1_hour) ? cell_phase2 : (CLS_1_hour<MA1_1_hour and CLS_1_hour>MA2_1_hour and MA1_1_hour>MA2_1_hour) ?cell_phase3 :(CLS_1_hour<MA1_1_hour and CLS_1_hour<MA2_1_hour and MA1_1_hour>MA2_1_hour) ? cell_phase4:(CLS_1_hour<MA1_1_hour and CLS_1_hour<MA2_1_hour and MA1_1_hour<MA2_1_hour) ? cell_phase5:(CLS_1_hour>MA1_1_hour and CLS_1_hour<MA2_1_hour and MA1_1_hour<MA2_1_hour) ? cell_phase6:col_col,cell_transp))
+
+
+// //---------------------- 4 Hour chart ----------------------------------
+
+//     table.cell(t,1,7, "4 Hour",text_color=color.white,text_size=table_text_size, bgcolor=color.rgb(0, 68, 255))
+//     if  showCls
+//         table.cell(t,2,7, str.tostring(CLS_4_hour, '#.###'),text_color=color.new(CLS_4_hour >CLS_4_hour[2] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(CLS_4_hour >CLS_4_hour[2] ? cell_up : cell_dn ,cell_transp))
+//     if  showMA01
+//         table.cell(t,3,7, str.tostring(MA1_4_hour, '#.###'),text_color=color.new(MA1_4_hour >MA1_4_hour[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA1_4_hour >MA1_4_hour[1]  ? cell_up : cell_dn ,cell_transp))
+//     if  showMA02
+//         table.cell(t,4,7, str.tostring(MA2_4_hour, '#.###'),text_color=color.new(MA2_4_hour >MA2_4_hour[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA2_4_hour >MA2_4_hour[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showMACross
+//         table.cell(t,5,7, MA1_4_hour > MA2_4_hour ? "Bullish" : "Bearish",text_color=color.new(MA1_4_hour > MA2_4_hour ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA1_4_hour > MA2_4_hour ? cell_up : cell_dn ,cell_transp))
+//     if  showRSI
+//         table.cell(t,6,7, str.tostring(RSI_4_hour, '#.###'),text_color=color.new(RSI_4_hour > 50 ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(RSI_4_hour > 50 ? cell_up : cell_dn ,cell_transp))
+//     if  showMACDV
+//         table.cell(t,7,7,str.tostring(MACDV_4_hour, '#.###'),text_color=color.new(MACDV_4_hour > MACDV_4_hour[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MACDV_4_hour > MACDV_4_hour[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showSignalV
+//         table.cell(t,8,7,str.tostring(SignalV_4_hour, '#.###'),text_color=color.new(SignalV_4_hour > SignalV_4_hour[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(SignalV_4_hour> SignalV_4_hour[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showMACDV_Status
+//         table.cell(t,9,7,stringmacdv_4_hour,text_color=color.rgb(7, 7, 7),text_size=table_text_size, bgcolor=color.new(MACDV_4_hour>50 ? cell_up :MACDV_4_hour<-50 ?  cell_dn:cell_MACDV4  ,cell_transp)) 
+//     if  showmomentum
+//         table.cell(t,10,7,stringmomentum_4_hour,text_color=color.rgb(7, 7, 7),text_size=table_text_size, bgcolor=color.new(CLS_4_hour>MA1_4_hour and CLS_4_hour>MA2_4_hour and MA1_4_hour<MA2_4_hour ? cell_phase1 : (CLS_4_hour>MA1_4_hour and CLS_4_hour>MA2_4_hour and MA1_4_hour>MA2_4_hour) ? cell_phase2 : (CLS_4_hour<MA1_4_hour and CLS_4_hour>MA2_4_hour and MA1_4_hour>MA2_4_hour) ?cell_phase3 :(CLS_4_hour<MA1_4_hour and CLS_4_hour<MA2_4_hour and MA1_4_hour>MA2_4_hour) ? cell_phase4:(CLS_4_hour<MA1_4_hour and CLS_4_hour<MA2_4_hour and MA1_4_hour<MA2_4_hour) ? cell_phase5:(CLS_4_hour>MA1_4_hour and CLS_4_hour<MA2_4_hour and MA1_4_hour<MA2_4_hour) ? cell_phase6:col_col,cell_transp))
+
+
+// //---------------------- 1 Day chart ----------------------------------
+
+//     table.cell(t,1,9, "1 Day",text_color=color.white,text_size=table_text_size, bgcolor=color.rgb(0, 68, 253))
+//     if  showCls
+//         table.cell(t,2,9, str.tostring(CLS_1_day, '#.###'),text_color=color.new(CLS_1_day >CLS_1_day[2] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(CLS_1_day >CLS_1_day[2] ? cell_up : cell_dn ,cell_transp))
+//     if  showMA01
+//         table.cell(t,3,9, str.tostring(MA1_1_day, '#.###'),text_color=color.new(MA1_1_day >MA1_1_day[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA1_1_day >MA1_1_day[1]  ? cell_up : cell_dn ,cell_transp))
+//     if  showMA02
+//         table.cell(t,4,9, str.tostring(MA2_1_day, '#.###'),text_color=color.new(MA2_1_day >MA2_1_day[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA2_1_day >MA2_1_day[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showMACross
+//         table.cell(t,5,9, MA1_1_day > MA2_1_day ? "Bullish" : "Bearish",text_color=color.new(MA1_1_day > MA2_1_day ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MA1_1_day > MA2_1_day ? cell_up : cell_dn ,cell_transp))
+//     if  showRSI
+//         table.cell(t,6,9, str.tostring(RSI_1_day, '#.###'),text_color=color.new(RSI_1_day > 50 ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(RSI_1_day > 50 ? cell_up : cell_dn ,cell_transp))
+//     if  showMACDV
+//         table.cell(t,7,9,str.tostring(MACDV_1_day, '#.###'),text_color=color.new(MACDV_1_day > MACDV_1_day[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(MACDV_1_day > MACDV_1_day[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showSignalV
+//         table.cell(t,8,9,str.tostring(SignalV_1_day, '#.###'),text_color=color.new(SignalV_1_day > SignalV_1_day[1] ? cell_up : cell_dn ,0),text_size=table_text_size, bgcolor=color.new(SignalV_1_day> SignalV_1_day[1] ? cell_up : cell_dn ,cell_transp))
+//     if  showMACDV_Status
+//         table.cell(t,9,9,stringmacdv_1_day,text_color=color.rgb(5, 5, 5),text_size=table_text_size, bgcolor=color.new(MACDV_1_day>50 ? cell_up :MACDV_1_day<-50 ?  cell_dn:cell_MACDV4  ,cell_transp)) 
+//     if  showmomentum
+//         table.cell(t,10,9,stringmomentum_1_day,text_color=color.rgb(7, 7, 7),text_size=table_text_size, bgcolor=color.new(CLS_1_day>MA1_1_day and CLS_1_day>MA2_1_day and MA1_1_day<MA2_1_day ? cell_phase1 : (CLS_1_day>MA1_1_day and CLS_1_day>MA2_1_day and MA1_1_day>MA2_1_day) ? cell_phase2 : (CLS_1_day<MA1_1_day and CLS_1_day>MA2_1_day and MA1_1_day>MA2_1_day) ?cell_phase3 :(CLS_1_day<MA1_1_day and CLS_1_day<MA2_1_day and MA1_1_day>MA2_1_day) ? cell_phase4:(CLS_1_day<MA1_1_day and CLS_1_day<MA2_1_day and MA1_1_day<MA2_1_day) ? cell_phase5:(CLS_1_day>MA1_1_day and CLS_1_day<MA2_1_day and MA1_1_day<MA2_1_day) ? cell_phase6:col_col,cell_transp))
+
+
+
